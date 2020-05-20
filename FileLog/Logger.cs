@@ -11,7 +11,7 @@ namespace FileLog
         readonly static ReaderWriterLockSlim LogWriteLock =
             new ReaderWriterLockSlim();
 
-        public static string FilePath { get; set; } = "log.txt";
+        private static string FilePath { get; set; } = "log.txt";
 
         public static void Init(string filePath)
         {
@@ -40,12 +40,13 @@ namespace FileLog
 
         public static void Writer(Model.LogLevel level, string content)
         {
-            LogWriteLock.EnterWriteLock();
             var logText = string.Format("[{0}] [{1}] {2}\n",
-                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:dd"),
+                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                     level.ToString(),
                     content
                 );
+
+            LogWriteLock.EnterWriteLock();
             try
             {
                 File.AppendAllText(FilePath, logText);
